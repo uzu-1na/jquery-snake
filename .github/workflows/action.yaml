@@ -9,7 +9,8 @@ on:
 jobs:
   quick-test:
     if: true
-    runs-on: [ tig-runner-jammy-x64 ]
+    runs-on:
+      group: tig
     steps:
       - uses: actions/checkout@v4
 
