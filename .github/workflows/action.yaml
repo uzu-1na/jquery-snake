@@ -9,8 +9,7 @@ on:
 jobs:
   quick-test:
     if: true
-    runs-on:
-      group: tig
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
