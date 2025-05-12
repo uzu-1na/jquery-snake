@@ -1,3 +1,11 @@
+name: Build and Deploy jQuery Snake
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
 jobs:
   quick-test:
     if: true
