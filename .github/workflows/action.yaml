@@ -1,0 +1,31 @@
+jobs:
+  quick-test:
+    if: true
+    runs-on: [ tig-runner-jammy-x64 ]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Git Meta Info
+        id: git-meta-info # Required
+        uses: lunit-io/github-actions/utils/git-meta-info@v1.1.0
+
+      - name: Login to Harbor
+        uses: docker/login-action@v3
+        with:
+          registry: harbor.mgmt.lunit.in
+          username: ${{ secrets.TIG_HARBOR_GLOBAL_PUSH_BOT_USERNAME }}
+          password: ${{ secrets.TIG_HARBOR_GLOBAL_PUSH_BOT_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ${{ env.IMAGE_NAME }}:${{ steps.git-meta-info.outputs.timestamp-branch-sha-tag }}
+
+      - uses: lunit-io/github-actions/bespoke-app/templar-archives@v1.1.0
+        with:
+          chart-name: 'uzu-demo'
+          deployment-tier: 'dev'
+          patch-keys: .image.tag
+          patch-values: ${{ steps.git-meta-info.outputs.timestamp-branch-sha-tag }}
+          uuid: ${{ secrets.TIG_TA_UUID }}
